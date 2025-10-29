@@ -6,6 +6,7 @@ pipeline {
         IMAGE_NAME = 'simple-microservice'
         IMAGE_TAG = 'latest'
         KUBE_NAMESPACE = 'default'
+        KUBECONFIG_PATH = 'C:\\Users\\vishal\\.kube\\config'   // 👈 Adjust this to your actual kubeconfig path
     }
 
     stages {
@@ -44,9 +45,10 @@ pipeline {
             steps {
                 echo '🚀 Deploying to Kubernetes...'
                 bat """
-                kubectl set image deployment/simple-microservice simple-microservice=%DOCKERHUB_USER%/%IMAGE_NAME%:%IMAGE_TAG% -n %KUBE_NAMESPACE% || ^
-                kubectl apply -f microservice-deployment.yaml
-                kubectl apply -f microservice-service.yaml
+                set KUBECONFIG=%KUBECONFIG_PATH%
+                kubectl apply -f k8s\\microservice-deployment.yaml
+                kubectl apply -f k8s\\microservice-service.yaml
+                kubectl set image deployment/simple-microservice simple-microservice=%DOCKERHUB_USER%/%IMAGE_NAME%:%IMAGE_TAG% -n %KUBE_NAMESPACE%
                 """
             }
         }
@@ -54,7 +56,10 @@ pipeline {
         stage('Verify Deployment') {
             steps {
                 echo '🔍 Verifying Pods...'
-                bat "kubectl get pods -n %KUBE_NAMESPACE%"
+                bat """
+                set KUBECONFIG=%KUBECONFIG_PATH%
+                kubectl get pods -n %KUBE_NAMESPACE%
+                """
             }
         }
     }
