@@ -11,14 +11,14 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/YOUR_GITHUB_USERNAME/simple-microservice.git'
+                git branch: 'main', url: 'https://github.com/vpu984/devopsproj.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh "docker build -t ${DOCKERHUB_USER}/${IMAGE_NAME}:${IMAGE_TAG} ."
+                    bat "docker build -t %DOCKERHUB_USER%/%IMAGE_NAME%:%IMAGE_TAG% ."
                 }
             }
         }
@@ -26,9 +26,9 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-                    sh """
-                    echo $PASS | docker login -u $USER --password-stdin
-                    docker push ${DOCKERHUB_USER}/${IMAGE_NAME}:${IMAGE_TAG}
+                    bat """
+                    echo %PASS% | docker login -u %USER% --password-stdin
+                    docker push %DOCKERHUB_USER%/%IMAGE_NAME%:%IMAGE_TAG%
                     """
                 }
             }
@@ -37,8 +37,8 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    sh """
-                    kubectl set image deployment/simple-microservice simple-microservice=${DOCKERHUB_USER}/${IMAGE_NAME}:${IMAGE_TAG} -n ${KUBE_NAMESPACE} || \
+                    bat """
+                    kubectl set image deployment/simple-microservice simple-microservice=%DOCKERHUB_USER%/%IMAGE_NAME%:%IMAGE_TAG% -n %KUBE_NAMESPACE% || ^
                     kubectl apply -f microservice-deployment.yaml
                     kubectl apply -f microservice-service.yaml
                     """
@@ -48,7 +48,7 @@ pipeline {
 
         stage('Verify Deployment') {
             steps {
-                sh 'kubectl get pods -n ${KUBE_NAMESPACE}'
+                bat 'kubectl get pods -n %KUBE_NAMESPACE%'
             }
         }
     }
