@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: simple-ms-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: simple-ms
+  ports:
+  - port: 80
+    targetPort: 3000
+    protocol: TCP

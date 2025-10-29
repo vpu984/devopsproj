@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-ms
+  labels:
+    app: simple-ms
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: simple-ms
+  template:
+    metadata:
+      labels:
+        app: simple-ms
+    spec:
+      containers:
+      - name: simple-ms
+        image: <DOCKERHUB_USER>/simple-microservice:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+        readinessProbe:
+          httpGet:
+            path: /hello
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /hello
+            port: 3000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
