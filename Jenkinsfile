@@ -11,6 +11,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+                echo "🔹 Cloning public repository..."
                 git branch: 'main', url: 'https://github.com/vpu984/devopsproj.git'
             }
         }
@@ -18,7 +19,9 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    bat "docker build -t %DOCKERHUB_USER%/%IMAGE_NAME%:%IMAGE_TAG% ."
+                    bat """
+                    docker build -t %DOCKERHUB_USER%/%IMAGE_NAME%:%IMAGE_TAG% .
+                    """
                 }
             }
         }
