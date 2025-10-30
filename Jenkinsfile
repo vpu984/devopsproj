@@ -46,8 +46,8 @@ pipeline {
                 echo '🚀 Deploying to Kubernetes...'
                 bat """
                 set KUBECONFIG=%KUBECONFIG_PATH%
-                kubectl apply -f microservice-deployment.yaml
-                kubectl apply -f microservice-service.yaml
+                kubectl apply -f deployment.yaml
+                kubectl apply -f service.yaml
                 kubectl set image deployment/simple-microservice simple-microservice=%DOCKERHUB_USER%/%IMAGE_NAME%:%IMAGE_TAG% -n %KUBE_NAMESPACE%
                 """
             }
