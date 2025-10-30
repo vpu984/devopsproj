@@ -47,8 +47,8 @@ pipeline {
                 bat """
                 set KUBECONFIG=%KUBECONFIG_PATH%
                 kubectl apply -f deployment.yaml
-                 kubectl set image deployment/simple-ms simple-ms=%DOCKERHUB_USER%/%IMAGE_NAME%:%IMAGE_TAG% -n %KUBE_NAMESPACE%
-                 kubectl rollout status deployment/simple-ms -n %KUBE_NAMESPACE%
+                kubectl set image deployment/simple-ms simple-ms=%DOCKERHUB_USER%/%IMAGE_NAME%:%IMAGE_TAG% -n %KUBE_NAMESPACE%
+                kubectl rollout status deployment/simple-ms -n %KUBE_NAMESPACE%
                 """
             }
         }
