@@ -5,7 +5,7 @@ pipeline {
         DOCKERHUB_USER = 'vishal984'
         IMAGE_NAME = 'simple-microservice'
         IMAGE_TAG = 'latest'
-        KUBE_NAMESPACE = 'default'
+        KUBE_NAMESPACE = 'dev-team'
         KUBECONFIG_PATH = 'C:\\Users\\vishal\\.kube\\config'   // 👈 Adjust this to your actual kubeconfig path
     }
 
@@ -47,6 +47,7 @@ pipeline {
                 bat """
                 set KUBECONFIG=%KUBECONFIG_PATH%
                 kubectl apply -f deployment.yaml
+                kubectl get deployments -n %KUBE_NAMESPACE%
                 kubectl set image deployment/simple-ms simple-ms=%DOCKERHUB_USER%/%IMAGE_NAME%:%IMAGE_TAG% -n %KUBE_NAMESPACE%
                 kubectl rollout status deployment/simple-ms -n %KUBE_NAMESPACE%
                 """
